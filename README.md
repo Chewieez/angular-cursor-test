@@ -1,5 +1,8 @@
 # AngularCursorTest
 
+This is a green field Angular project created as a method to learn how to use Signals and also an experiment in using Cursor to create full app features and to see how little actual code I could be required to write by myself. 
+
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.5.
 
 ## Development server
