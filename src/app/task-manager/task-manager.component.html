@@ -1,0 +1,89 @@
+<div class="task-manager">
+  <div class="header">
+    <h1>Task Manager</h1>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="label">Total Tasks:</span>
+        <span class="value">{{ stats().total }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">Completed:</span>
+        <span class="value">{{ stats().completed }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">Active:</span>
+        <span class="value">{{ stats().active }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">Completion Rate:</span>
+        <span class="value">{{ stats().completionRate | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Status:</label>
+      <select [(ngModel)]="filter">
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Priority:</label>
+      <select [(ngModel)]="priorityFilter">
+        <option value="all">All</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="add-task">
+    <input
+      #taskInput
+      type="text"
+      placeholder="Add a new task..."
+      (keyup.enter)="addTask(taskInput.value); taskInput.value = ''"
+    >
+    <select #prioritySelect>
+      <option value="low">Low Priority</option>
+      <option value="medium" selected>Medium Priority</option>
+      <option value="high">High Priority</option>
+    </select>
+    <button (click)="addTaskWithPriority(taskInput, prioritySelect)">
+      Add Task
+    </button>
+  </div>
+
+  <div class="task-list">
+    @for (task of filteredTasks(); track task.id) {
+      <div class="task-item" [class.completed]="task.completed">
+        <div class="task-content">
+          <input
+            type="checkbox"
+            [checked]="task.completed"
+            (change)="toggleTask(task.id)"
+          >
+          <span class="task-title">{{ task.title }}</span>
+          <span class="task-priority" [class]="task.priority">
+            {{ task.priority }}
+          </span>
+        </div>
+        <div class="task-actions">
+          <select
+            [value]="task.priority"
+            (change)="onPriorityChange($event, task.id)"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button class="delete-btn" (click)="deleteTask(task.id)">Delete</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

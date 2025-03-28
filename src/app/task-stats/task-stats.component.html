@@ -1,0 +1,43 @@
+<div class="task-stats">
+  <h2>Task Statistics</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Tasks</h3>
+      <div class="stat-value">{{ stats().total }}</div>
+    </div>
+
+    <div class="stat-card">
+      <h3>Completed</h3>
+      <div class="stat-value">{{ stats().completed }}</div>
+    </div>
+
+    <div class="stat-card">
+      <h3>Active</h3>
+      <div class="stat-value">{{ stats().active }}</div>
+    </div>
+
+    <div class="stat-card">
+      <h3>Completion Rate</h3>
+      <div class="stat-value">{{ stats().completionRate | number:'1.0-0' }}%</div>
+    </div>
+  </div>
+
+  <div class="priority-breakdown">
+    <h3>Tasks by Priority</h3>
+    <div class="priority-list">
+      <div class="priority-item">
+        <span class="priority-label high">High Priority</span>
+        <span class="priority-count">{{ highPriorityCount() }}</span>
+      </div>
+      <div class="priority-item">
+        <span class="priority-label medium">Medium Priority</span>
+        <span class="priority-count">{{ mediumPriorityCount() }}</span>
+      </div>
+      <div class="priority-item">
+        <span class="priority-label low">Low Priority</span>
+        <span class="priority-count">{{ lowPriorityCount() }}</span>
+      </div>
+    </div>
+  </div>
+</div>
