@@ -1,7 +1,6 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Task } from './task.interface';
 import { TaskService } from '../task.service';
 import { TaskPriorityBadgeComponent } from '../task-priority-badge/task-priority-badge.component';
 

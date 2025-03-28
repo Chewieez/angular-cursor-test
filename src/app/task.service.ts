@@ -92,28 +92,4 @@ export class TaskService {
       )
     );
   }
-
-  // Getter for all tasks
-  getTasks() {
-    return this.tasks();
-  }
-
-  // Getter for filtered tasks
-  getFilteredTasks() {
-    return this.filteredTasks();
-  }
-
-  // Getter for stats
-  getStats() {
-    return this.stats();
-  }
-
-  // Getter for filters
-  getFilter() {
-    return this.filter();
-  }
-
-  getPriorityFilter() {
-    return this.priorityFilter();
-  }
 }
