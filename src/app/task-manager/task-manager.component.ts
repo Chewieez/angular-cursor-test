@@ -1,68 +1,53 @@
-import { Component, effect } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from './task.interface';
 import { TaskService } from '../task.service';
+import { TaskPriorityBadgeComponent } from '../task-priority-badge/task-priority-badge.component';
 
 @Component({
   selector: 'app-task-manager',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TaskPriorityBadgeComponent],
   templateUrl: './task-manager.component.html',
   styleUrl: './task-manager.component.scss'
 })
 export class TaskManagerComponent {
+  // Signal properties
+  filteredTasks;
+  stats;
+  filter;
+  priorityFilter;
+
   constructor(private taskService: TaskService) {
-    effect(() => {
-      console.log('Tasks updated:', this.taskService.getTasks());
-      console.log('Current stats:', this.taskService.getStats());
-    });
+    // Initialize signals in constructor
+    this.filteredTasks = this.taskService.filteredTasks;
+    this.stats = this.taskService.stats;
+    this.filter = this.taskService.filter;
+    this.priorityFilter = this.taskService.priorityFilter;
   }
 
-  // Methods to manipulate tasks
-  addTask(title: string, priority: Task['priority'] = 'medium'): void {
-    this.taskService.addTask(title, priority);
+  addTask(title: string) {
+    if (!title.trim()) return;
+    this.taskService.addTask(title);
   }
 
-  addTaskWithPriority(input: HTMLInputElement, select: HTMLSelectElement): void {
-    const title = input.value;
-    const priority = select.value as Task['priority'];
-    this.addTask(title, priority);
+  addTaskWithPriority(input: HTMLInputElement, select: HTMLSelectElement) {
+    if (!input.value.trim()) return;
+    this.taskService.addTask(input.value, select.value as 'low' | 'medium' | 'high');
     input.value = '';
   }
 
-  toggleTask(id: number): void {
+  toggleTask(id: number) {
     this.taskService.toggleTask(id);
   }
 
-  deleteTask(id: number): void {
+  deleteTask(id: number) {
     this.taskService.deleteTask(id);
   }
 
-  updateTaskPriority(id: number, priority: Task['priority']): void {
-    this.taskService.updateTaskPriority(id, priority);
-  }
-
-  onPriorityChange(event: Event, taskId: number): void {
+  onPriorityChange(event: Event, taskId: number) {
     const select = event.target as HTMLSelectElement;
-    const priority = select.value as Task['priority'];
-    this.updateTaskPriority(taskId, priority);
-  }
-
-  // Expose signals for template
-  get filteredTasks() {
-    return this.taskService.filteredTasks;
-  }
-
-  get stats() {
-    return this.taskService.stats;
-  }
-
-  get filter() {
-    return this.taskService.filter;
-  }
-
-  get priorityFilter() {
-    return this.taskService.priorityFilter;
+    this.taskService.updateTaskPriority(taskId, select.value as 'low' | 'medium' | 'high');
   }
 }

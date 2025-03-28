@@ -68,9 +68,7 @@
             (change)="toggleTask(task.id)"
           >
           <span class="task-title">{{ task.title }}</span>
-          <span class="task-priority" [class]="task.priority">
-            {{ task.priority }}
-          </span>
+          <app-task-priority-badge [priority]="task.priority" />
         </div>
         <div class="task-actions">
           <select

@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskService } from '../task.service';
 
@@ -10,27 +10,17 @@ import { TaskService } from '../task.service';
   styleUrl: './task-stats.component.scss'
 })
 export class TaskStatsComponent {
-  constructor(private taskService: TaskService) {}
+  // Signal properties
+  stats;
+  lowPriorityCount;
+  mediumPriorityCount;
+  highPriorityCount;
 
-  // Expose signals for template
-  get stats() {
-    return this.taskService.stats;
+  constructor(private taskService: TaskService) {
+    // Initialize signals in constructor
+    this.stats = this.taskService.stats;
+    this.lowPriorityCount = this.taskService.lowPriorityCount;
+    this.mediumPriorityCount = this.taskService.mediumPriorityCount;
+    this.highPriorityCount = this.taskService.highPriorityCount;
   }
-
-  get tasks() {
-    return this.taskService.tasks;
-  }
-
-  // Computed values for priority counts
-  highPriorityCount = computed(() =>
-    this.tasks().filter(t => t.priority === 'high').length
-  );
-
-  mediumPriorityCount = computed(() =>
-    this.tasks().filter(t => t.priority === 'medium').length
-  );
-
-  lowPriorityCount = computed(() =>
-    this.tasks().filter(t => t.priority === 'low').length
-  );
 }

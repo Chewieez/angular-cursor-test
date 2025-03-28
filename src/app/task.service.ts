@@ -5,45 +5,61 @@ import { Task } from './task-manager/task.interface';
   providedIn: 'root'
 })
 export class TaskService {
-  // Writable signal for tasks
+  // Writable signals
   tasks = signal<Task[]>([]);
-
-  // Writable signal for filter
   filter = signal<'all' | 'active' | 'completed'>('all');
-
-  // Writable signal for priority filter
   priorityFilter = signal<'all' | 'low' | 'medium' | 'high'>('all');
 
-  // Computed signal for filtered tasks
+  // Computed signals for filtered tasks
   filteredTasks = computed(() => {
-    return this.tasks().filter(task => {
-      const matchesStatus = this.filter() === 'all' ||
-        (this.filter() === 'active' && !task.completed) ||
-        (this.filter() === 'completed' && task.completed);
+    let filtered = this.tasks();
 
-      const matchesPriority = this.priorityFilter() === 'all' ||
-        task.priority === this.priorityFilter();
+    // Apply status filter
+    if (this.filter() !== 'all') {
+      filtered = filtered.filter(task =>
+        this.filter() === 'completed' ? task.completed : !task.completed
+      );
+    }
 
-      return matchesStatus && matchesPriority;
-    });
+    // Apply priority filter
+    if (this.priorityFilter() !== 'all') {
+      filtered = filtered.filter(task => task.priority === this.priorityFilter());
+    }
+
+    return filtered;
   });
 
-  // Computed signal for task statistics
+  // Computed signal for stats
   stats = computed(() => {
-    const total = this.tasks().length;
-    const completed = this.tasks().filter(task => task.completed).length;
+    const tasks = this.tasks();
+    const total = tasks.length;
+    const completed = tasks.filter(task => task.completed).length;
     const active = total - completed;
+    const completionRate = total === 0 ? 0 : (completed / total) * 100;
 
     return {
       total,
       completed,
       active,
-      completionRate: total === 0 ? 0 : (completed / total) * 100
+      completionRate
     };
   });
 
+  // Computed signals for priority counts
+  lowPriorityCount = computed(() =>
+    this.tasks().filter(task => task.priority === 'low').length
+  );
+
+  mediumPriorityCount = computed(() =>
+    this.tasks().filter(task => task.priority === 'medium').length
+  );
+
+  highPriorityCount = computed(() =>
+    this.tasks().filter(task => task.priority === 'high').length
+  );
+
   // Methods to manipulate tasks
-  addTask(title: string, priority: Task['priority'] = 'medium'): void {
+  addTask(title: string, priority: 'low' | 'medium' | 'high' = 'medium'): void {
     if (!title.trim()) return;
 
     const newTask: Task = {
@@ -69,7 +85,7 @@ export class TaskService {
     this.tasks.update(tasks => tasks.filter(task => task.id !== id));
   }
 
-  updateTaskPriority(id: number, priority: Task['priority']): void {
+  updateTaskPriority(id: number, priority: 'low' | 'medium' | 'high'): void {
     this.tasks.update(tasks =>
       tasks.map(task =>
         task.id === id ? { ...task, priority } : task
